@@ -1,0 +1,19 @@
+torchrun --standalone --nproc_per_node 8 torchrun_main_DDP.py \
+    --model_name 1b_scale \
+    --model_config configs/llama_1b.json \
+    --optimizer scale \
+    --lr 2e-4 \
+	--no_slice \
+    --momentum 0.9 \
+	--adam_lr 1e-3 \
+    --weight_decay 0.0 \
+    --batch_size 64 \
+    --total_batch_size 512 \
+    --num_training_steps 100000 \
+    --warmup_steps 10000 \
+    --dtype bfloat16 \
+    --eval_every 1000 \
+    --save_every 5000 \
+    --seed 42  \
+    --scheduler cosine \
+    --dataset_path /path/to/c4/en \

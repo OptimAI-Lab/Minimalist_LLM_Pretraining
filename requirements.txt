@@ -1,0 +1,12 @@
+bitsandbytes==0.43.3
+datasets==2.21.0
+loguru==0.7.2
+numpy==2.1.0
+setuptools==72.1.0
+torch==2.4.0
+tqdm==4.66.5
+transformers==4.31.0
+wandb
+torchvision
+torchaudio
+accelerate
