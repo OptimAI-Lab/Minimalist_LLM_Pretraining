@@ -6,9 +6,19 @@
 
 Preliminary code release for our paper "A Minimalist Optimizer Design for LLM Pretraining", by Athanasios Glentis, Jiaxiang Li,  Andi Han and Mingyi Hong.
 
-## Abstract
+## SCALE Optimizer
 
-Training large language models (LLMs) typically relies on adaptive optimizers such as Adam, which require significant memory to maintain first- and second-moment matrices, known as optimizer states. While recent works such as GaLore, Fira, and APOLLO have proposed state-compressed variants to reduce memory consumption, a fundamental question remains: What is the minimal amount of optimizer state that is truly necessary to retain state-of-the-art performance in LLM pretraining? In this work, we systematically investigate this question using a bottom-up approach. We find that two memory- and compute-efficient optimization techniques are particularly effective: (1) column-wise gradient normalization significantly boosts the performance of plain SGD without requiring momentum; and (2) adding first-order momentum only to the output layer - where gradient variance is highest - yields performance competitive with fully adaptive methods such as Muon. Based on these insights, we propose SCALE (Stochastic Column-normalized Last-layer Momentum), a new optimizer that combines column-normalized SGD with last-layer momentum, where column normalization refers to normalizing the gradient along the output dimension. Across multiple LLaMA models (60M-1B), SCALE matches or exceeds the performance of Adam while using only 35-45% of the total memory. It also consistently outperforms memory-efficient optimizers such as GaLore, Fira, and APOLLO, making it a strong candidate for large-scale pretraining under memory constraints. For the LLaMA 7B model, SCALE outperforms the state-of-the-art method APOLLO in terms of both perplexity and memory consumption. In addition, our method serves as a minimalist baseline for more sophisticated optimizer design. 
+We introduce our proposed optimizer, SCALE, detailed in Algorithm 1. The design of SCALE is motivated by empirical insights from our experiments, which highlighted the importance of stabilizing updates in the last layer and controlling gradient scale via column-wise normalization. Accordingly, SCALE integrates two components: 
+
+- column-wise normalization of gradients
+- first order momentum restricted to the last layer
+
+Despite its minimalist design, SCALE is highly effective, outperforming baselines such as Adam and achieving performance competitive with state-of-the-art Stable-SPAM and Muon, while using substantially less memory.
+
+<div align="center">
+  <img src="imgs/scale_algorithm.png" alt="Image 1" style="width: 600px; margin: 0 auto;">
+</div>
+
 
 
 ## Usage
