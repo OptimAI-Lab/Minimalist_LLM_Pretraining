@@ -29,7 +29,7 @@ Despite its minimalist design, SCALE is highly effective, outperforming baseline
   <img src="imgs/pareto-fig.png" alt="Image 1" style="width: 500px; margin: 0 auto;">
 </div>
 
-**Numerical Results:** Bellow we include our numerical results for pretraining LLaMA models on the C4 dataset. We report evaluation perplexity as our metric (and model+optimizer memory in parentesis).
+**Numerical Results:** Bellow we include our numerical results for pretraining LLaMA models on the C4 dataset. We report evaluation perplexity as our metric (and model+optimizer memory in parenthesis).
 
 #### LLaMA 60M-1B:
 
