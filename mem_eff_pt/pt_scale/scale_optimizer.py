@@ -1,5 +1,5 @@
 import torch
-
+import math
 
 class SCALE(torch.optim.Optimizer):
     """
@@ -46,7 +46,6 @@ class SCALE(torch.optim.Optimizer):
         self.debug = debug
         self.max_lr = lr
         
- 
         super().__init__(params, defaults)
         
         for p in main_params:
@@ -71,13 +70,14 @@ class SCALE(torch.optim.Optimizer):
                 
         for group in self.param_groups:
 
-            ############################
-            #       Main Params        #
-            ############################
+            #############################
+            #   Main+Secondary Params   #
+            #############################
 
-            params = [p for p in group["params"] if (self.state[p]["param_type"] == "main_param") ]
+            params = [p for p in group["params"] if (self.state[p]["param_type"] == "main_param") or (self.state[p]["param_type"] == "secondary_param") ]
             lr = group["lr"]
             wd = group["wd"]
+            beta1 = group["momentum"]
 
             for p in params:    
                 # sanity check
@@ -88,86 +88,41 @@ class SCALE(torch.optim.Optimizer):
                     g = g.view(g.size(0), -1)
                 assert g is not None
  
-                # calc update
-                state = self.state[p]
-                
                 if self.debug:
                     print("Main: ", self.id_to_name[id(p)])
                 
                 if self.id_to_name is not None and "embed_tokens" in self.id_to_name[id(p)]:  
                     col_dim = 0
-                    #row_dim = 1
                 else:
                     col_dim = 1
-                    #row_dim = 0
                 
-                var = torch.mean(torch.square(g), dim=col_dim, keepdim=True)
-                s = torch.sqrt(var).clamp_min_(1e-8)
-                u = g / s
-                    
-                # apply weight decay
-                p.data.mul_(1 - lr * wd)
- 
-                # apply update
-                p.data.add_(u, alpha=-lr)
-                
-                if self.debug:
-                    print("p.data.dtype: ", p.data.dtype, "u.dtype: ",  u.dtype)
-
-
-            ############################
-            #     Secondary Params     #
-            ############################
-            
-            
-            params = [p for p in group["params"] if (self.state[p]["param_type"] == "secondary_param") ]
-        
-            beta1 = group["momentum"]
-            lr = group["lr"]
-            wd = group["wd"]
- 
-            for p in params:          
-                g = p.grad
-                if g is None:
-                    continue
-            
-                if self.debug:    
-                    print("Secondary (Momentum): ",  self.id_to_name[id(p)])
-            
-                if self.id_to_name is not None and "embed_tokens" in self.id_to_name[id(p)]:    
-                    col_dim = 0
-                    row_dim = 1
-                else:
-                    col_dim = 1
-                    row_dim = 0        
-                    
+                # calc update
                 state = self.state[p]
-                if "step" not in state:
-                    state["step"] = 0
-                    state["moment1"] = torch.zeros_like(g)
-                    
-                state["step"] += 1
-                step = state["step"]
-                buf1 = state["moment1"]
-                buf1.lerp_(g, 1 - beta1)
-                g = buf1
+
+                if self.state[p]["param_type"] == "secondary_param":
+                    # add momentum 
+                    if "moment1" not in state:
+                        state["moment1"] = torch.zeros_like(g)
+                    buf1 = state["moment1"]
+                    buf1.lerp_(g, 1 - beta1)
+                    g = buf1
 
                 var = torch.mean(torch.square(g), dim=col_dim, keepdim=True)
                 s = torch.sqrt(var).clamp_min_(1e-8)
                 u = g / s
-
+                
                 # apply weight decay
                 p.data.mul_(1 - lr * wd)
-
+                
                 # apply update
                 p.data.add_(u, alpha=-lr)
                 
                 if self.debug:
                     print("p.data.dtype: ", p.data.dtype, "u.dtype: ",  u.dtype)
-         
-        
+
+
             ############################
-            #     Oned Params          #
+            #       Oned Params        #
             ############################
 
 
@@ -206,7 +161,6 @@ class SCALE(torch.optim.Optimizer):
 
                 g = buf1 / (eps + buf2.sqrt())
                 
-
                 bias_correction1 = 1 - beta1**step
                 bias_correction2 = 1 - beta2**step
                 scale = bias_correction1 / bias_correction2**0.5
