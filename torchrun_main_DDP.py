@@ -2,7 +2,6 @@ import os
 import time
 import json
 import random
-import numpy as np
 
 import torch
 import torch.nn as nn
@@ -29,7 +28,7 @@ from mem_eff_pt.eff_pretraining.modeling_llama import LlamaForCausalLM
 from mem_eff_pt.utils.train_utils import *
 from mem_eff_pt.utils.args import parse_args
  
- 
+import numpy as np
 
 transformers.logging.set_verbosity_error()
 torch.backends.cuda.enable_mem_efficient_sdp(False)
