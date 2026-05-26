@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/static/v1?label=arXiv&message=2506.16659&color=b31b1b" />
 </a>
 
-Preliminary code release for ICML 2026 paper " Memory-Efficient LLM Pretraining via Minimalist Optimizer Design", by Athanasios Glentis, Jiaxiang Li,  Andi Han and Mingyi Hong.
+Preliminary code release for our ICML 2026 paper " Memory-Efficient LLM Pretraining via Minimalist Optimizer Design", by Athanasios Glentis, Jiaxiang Li,  Andi Han and Mingyi Hong.
 
 ## SCALE Optimizer
 
