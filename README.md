@@ -1,10 +1,10 @@
-# Memory-Efficient LLM Pretraining via Minimalist Optimizer Design 
+# Memory-Efficient LLM Pretraining via Minimalist Optimizer Design (ICML 2026) 
 
 <a href="https://arxiv.org/abs/2506.16659">
   <img src="https://img.shields.io/static/v1?label=arXiv&message=2506.16659&color=b31b1b" />
 </a>
 
-Preliminary code release for our ICML 2026 paper " Memory-Efficient LLM Pretraining via Minimalist Optimizer Design", by Athanasios Glentis, Jiaxiang Li,  Andi Han and Mingyi Hong.
+Preliminary code release for our paper "Memory-Efficient LLM Pretraining via Minimalist Optimizer Design", by Athanasios Glentis, Jiaxiang Li,  Andi Han and Mingyi Hong.
 
 ## SCALE Optimizer
 
@@ -96,7 +96,7 @@ torchrun --standalone --nproc_per_node 4 torchrun_main_DDP.py \
 If you find this work useful for your research, please cite our paper:
 ```bibtex
 @article{glentis2025minimalist,
-  title={A Minimalist Optimizer Design for LLM Pretraining},
+  title={Memory-Efficient LLM Pretraining via Minimalist Optimizer Design},
   author={Glentis, Athanasios and Li, Jiaxiang and Han, Andi and Hong, Mingyi},
   journal={arXiv preprint arXiv:2506.16659},
   year={2025}
